@@ -11,9 +11,9 @@ app.use(morgan('combined'))
 app.use(bodyParser.json())
 app.use(cors()) //allow anyone to access server
 
-app.get('/status', (req, res) => {
+app.post('/register', (req, res) => {
     res.send({
-        message: "Hello world!"
+        message: `Welcome ${req.body.email} user was registered!`
     })
 })
 
