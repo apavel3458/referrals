@@ -16,12 +16,6 @@ app.use(cors()) //allow anyone to access server
 
 require('./routes')(app)
 
-app.post('/register', (req, res) => {
-    res.send({
-        message: `Welcome ${req.body.email} user was registered!`
-    })
-})
-
 sequelize.sync()
     .then(() => {
         app.listen(config.port)
