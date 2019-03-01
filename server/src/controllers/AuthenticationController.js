@@ -1,16 +1,27 @@
+/* eslint-disable no-console */
 const {User} = require('../models')
+const jwt = require('jsonwebtoken')
+const config = require('../config/config')
 
+function jwtSignUser(user) {
+    const ONE_WEEK = 60*60*24*7
+    return jwt.sign(user, config.authentication.jwtSecret, {
+        expiresIn: ONE_WEEK
+    })
+}
 
 module.exports = {
-    async registerr(req, res) {
+    async register(req, res) {
         try {
             const user = await User.create(req.body)
+            const userJson = user.toJSON()
             res.send({
-                user: user.toJSON(),
-                message: `Registration for user ${req.body.email} completed!`
+                user: userJson,
+                message: `Registration for user ${req.body.email} completed!`,
+                token: jwtSignUser(userJson)
             })
         } catch (err) {
-            res.status(400).send({
+            res.status(403).send({
                 error: 'This email account is already in use.'
             })
         }
@@ -27,25 +38,28 @@ module.exports = {
             
             if (!user) {
                 res.status(403).send({
-                    error: 'The login information is incorrect'
+                    error: 'The login information is incorrect (no user)'
                 })
             }
-
-            const isPasswordValid = password === user.password
+            
+            const isPasswordValid = await user.comparePassword(password)
             if (!isPasswordValid) {
                 return res.status(403).send({
-                    error: 'The login information is incorrect'
+                    error: 'The login information is incorrect (bad pw)'
                 })
             }
-
+            
+            const userJson = user.toJSON()
             res.send({
-                user: user.toJSON()
+                user: userJson,
+                token: jwtSignUser(userJson)
             })
 
             res.send({
                 user: user.toJSON()
             })
         } catch (err) {
+            console.log(err)
             res.status(500).send({
                 error: 'An error has occured trying to log in.'
             })

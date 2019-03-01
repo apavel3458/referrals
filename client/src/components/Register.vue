@@ -8,20 +8,23 @@
               </v-toolbar>
               <div class="pl-4 pr-4 pt-2 pb-2">
                 <v-flex xs12 sm12 md8 offset-md2>
-                  <v-text-field
-                    label="E-Mail"
-                    type="email"
-                    name="email"
-                    v-model="email"
-                    placeholder="E-mail">
-                  </v-text-field>
-                  <v-text-field
-                    label="Password"
-                    type="password"
-                    name="password"
-                    placeholder="Password"
-                    v-model="password">
-                  </v-text-field>
+                  <form name="tab-tracker-form" autocomplete="off">
+                    <v-text-field
+                      label="E-Mail"
+                      type="email"
+                      name="email"
+                      v-model="email"
+                      placeholder="E-mail">
+                    </v-text-field>
+                    <v-text-field
+                      label="Password"
+                      type="password"
+                      name="password"
+                      placeholder="Password"
+                      autocomplete="new-password"
+                      v-model="password">
+                    </v-text-field>
+                  </form>
                 </v-flex>
                 <br/>
                 <div class="error" v-html="error" />
@@ -52,7 +55,8 @@ export default {
           email: this.email,
           password: this.password
         })
-        console.log(response.data)
+        this.$store.dispatch('setToken', response.data.token)
+        this.$store.dispatch('setUser', response.data.user)
       } catch (error) {
         this.error = error.response.data.error
       }
