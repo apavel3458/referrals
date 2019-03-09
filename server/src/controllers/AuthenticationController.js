@@ -37,7 +37,7 @@ module.exports = {
             })
             
             if (!user) {
-                res.status(403).send({
+                return res.status(403).send({
                     error: 'The login information is incorrect (no user)'
                 })
             }
@@ -50,17 +50,13 @@ module.exports = {
             }
             
             const userJson = user.toJSON()
-            res.send({
+            return res.send({
                 user: userJson,
                 token: jwtSignUser(userJson)
             })
-
-            res.send({
-                user: user.toJSON()
-            })
         } catch (err) {
             console.log(err)
-            res.status(500).send({
+            return res.status(500).send({
                 error: 'An error has occured trying to log in.'
             })
         }

@@ -4,20 +4,31 @@
 
     <v-toolbar-title class="white--text">
       <span class="home" @click="navigateTo({name: 'root'})">
-      Cardiology Referral Site
+      LHSC Cardiology Referrals
       </span>
     </v-toolbar-title>
 
     <v-spacer></v-spacer>
 
-    <!-- TODO: Implement or remove -->
-    <!--v-toolbar-items>
-      <v-btn flat dark>
-        Browse
-      </v-btn>
-    </v-toolbar-items-->
+    <v-toolbar-items>
+
+    </v-toolbar-items>
 
     <v-toolbar-items>
+        <v-btn
+            v-if="$store.state.isUserLoggedIn"
+            flat
+            dark
+            @click="navigateTo('dashboard')">
+          Dashboard
+        </v-btn>
+        <v-btn
+            v-if="$store.state.isUserLoggedIn"
+            flat
+            dark
+            @click="navigateTo('users')">
+          Users
+        </v-btn>
         <v-btn
           v-if="!$store.state.isUserLoggedIn"
             flat
@@ -29,21 +40,27 @@
           flat
           dark
           @click="navigateTo('register')">
-          Sign Up
+            Register
+        </v-btn>
+        <v-btn  v-if="$store.state.isUserLoggedIn"
+          flat
+          dark
+          @click="logout">
+          Log Out
         </v-btn>
     </v-toolbar-items>
 
-    <v-btn icon>
-      <v-icon>search</v-icon>
+    <v-btn icon
+      v-if="!$store.state.isUserLoggedIn"
+      click="navigateTo('register')">
+      <v-icon>account_box</v-icon>
     </v-btn>
 
-    <v-btn icon>
-      <v-icon>apps</v-icon>
-    </v-btn>
-
-    <v-btn icon>
-      <v-icon>refresh</v-icon>
-    </v-btn>
+    <div
+      v-if="$store.state.isUserLoggedIn"
+      class="headerElement">
+      <v-icon>account_box</v-icon><span class="headerElementSpan">{{$store.state.user.email}}</span>
+    </div>
 
     <v-btn icon>
       <v-icon>more_vert</v-icon>
@@ -57,6 +74,13 @@ export default {
   methods: {
     navigateTo (route) {
       this.$router.push(route)
+    },
+    logout () {
+      this.$store.dispatch('setToken', null)
+      this.$store.dispatch('setUser, null')
+      this.$router.push({
+        name: 'root'
+      })
     }
   }
 }
@@ -69,5 +93,12 @@ export default {
 }
 .home:hover {
   color: rgb(218, 218, 218);
+}
+.headerElement {
+  vertical-align: middle;
+}
+.headerElementSpan {
+  line-height: 1;
+  vertical-align: text-top;
 }
 </style>

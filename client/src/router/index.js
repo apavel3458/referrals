@@ -1,8 +1,11 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
+// import HelloWorld from '@/components/HelloWorld'
 import Register from '@/components/Register'
 import Login from '@/components/Login'
+import Dashboard from '@/components/Dashboard'
+import CreateReferral from '@/components/referral/CreateReferral'
+import ViewReferral from '@/components/referral/ViewReferral'
 
 Vue.use(Router)
 
@@ -11,7 +14,7 @@ export default new Router({
     {
       path: '/',
       name: 'root',
-      component: HelloWorld
+      component: CreateReferral
     },
     {
       path: '/register',
@@ -22,6 +25,21 @@ export default new Router({
       path: '/login',
       name: 'login',
       component: Login
+    },
+    {
+      path: '/dashboard',
+      name: 'dashboard',
+      component: Dashboard
+    },
+    {
+      path: '/referrals/create',
+      name: 'CreateReferral',
+      component: CreateReferral
+    },
+    {
+      path: '/referrals/:referralId',
+      name: 'referral',
+      component: ViewReferral
     }
   ]
 })

@@ -2,5 +2,7 @@
     "jshint.options": {
         "esversion": 6,
         "asi": true
-    }
+    },
+    "css.lint.unknownAtRules": "ignore",
+    "css.validate": false
 }

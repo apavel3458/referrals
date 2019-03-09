@@ -2,11 +2,7 @@
   <v-container grid-list-md text-xs-center>
     <v-layout row wrap>
       <v-flex xs12 sm6 offset-sm3>
-          <div class="elevation-2">
-              <v-toolbar flat dense class="blue" dark>
-                <v-toolbar-title>Register</v-toolbar-title>
-              </v-toolbar>
-              <div class="pl-4 pr-4 pt-2 pb-2">
+          <panel title="Register New User">
                 <v-flex xs12 sm12 md8 offset-md2>
                   <form name="tab-tracker-form" autocomplete="off">
                     <v-text-field
@@ -26,11 +22,9 @@
                     </v-text-field>
                   </form>
                 </v-flex>
-                <br/>
                 <div class="error" v-html="error" />
                 <v-btn color="info" @click="register">Register</v-btn>
-              </div>
-          </div>
+          </panel>
 
       </v-flex>
     </v-layout>
@@ -39,6 +33,7 @@
 
 <script>
 import AuthenticationService from '@/services/AuthenticationService'
+import Panel from '@/components/Panel'
 export default {
   name: 'HelloWorld',
   data () {
@@ -48,6 +43,7 @@ export default {
       error: ''
     }
   },
+  components: {Panel},
   methods: {
     async register () {
       try {
@@ -57,6 +53,9 @@ export default {
         })
         this.$store.dispatch('setToken', response.data.token)
         this.$store.dispatch('setUser', response.data.user)
+        this.$router.push({
+          name: 'dashboard'
+        })
       } catch (error) {
         this.error = error.response.data.error
       }
