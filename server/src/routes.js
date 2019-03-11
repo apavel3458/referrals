@@ -17,6 +17,12 @@ module.exports = (app) => {
     app.post('/referrals/add',
         ReferralsController.add)
 
+    app.post('/referrals/delete',
+        ReferralsController.delete)
+
     app.get('/referrals/:referralId',
         ReferralsController.show)
+
+    app.put('/referrals/:referralId',
+        ReferralsController.put)
 }

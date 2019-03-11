@@ -72,7 +72,6 @@
 </template>
 
 <script>
-import Panel from '@/components/Panel'
 // import _ from 'lodash'
 
 export default {
@@ -92,7 +91,7 @@ export default {
   props: [
     'eventBus'
   ],
-  components: {Panel},
+  components: {},
   watch: {
     testSelected (newVal) {
       this.$emit('selectTest', newVal)

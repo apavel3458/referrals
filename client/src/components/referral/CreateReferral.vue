@@ -88,7 +88,7 @@
             <v-stepper-content step="2">
               <v-card
                 class="mb-1"
-                color="grey lighten-4">
+                color="grey lighten-5">
               <panel title="Cardiology Referral Form">
                 <patient-info v-bind:pt="pt" :eventBus="eventBus" @validated="ptInfoValid = $event"></patient-info>
               </panel>
@@ -177,7 +177,6 @@
 </template>
 
 <script>
-import Panel from '@/components/Panel'
 import HeartScore from '@/components/referral/HeartScore'
 import Introduction from '@/components/referral/Introduction'
 import PatientInfo from '@/components/referral/PatientInfo'
@@ -211,7 +210,7 @@ export default {
 
     }
   },
-  components: {Panel, HeartScore, Introduction, PatientInfo, TestSelection, SummaryView},
+  components: {HeartScore, Introduction, PatientInfo, TestSelection, SummaryView},
   watch: {
     menu (val) {
       val && this.$nextTick(() => (this.$refs.picker.activePicker = 'YEAR'))

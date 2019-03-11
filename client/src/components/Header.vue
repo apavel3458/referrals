@@ -36,18 +36,18 @@
             @click="navigateTo('login')">
           Login
         </v-btn>
-        <v-btn  v-if="!$store.state.isUserLoggedIn"
+        <!--v-btn  v-if="!$store.state.isUserLoggedIn"
           flat
           dark
           @click="navigateTo('register')">
             Register
-        </v-btn>
-        <v-btn  v-if="$store.state.isUserLoggedIn"
+        </v-btn-->
+        <!-- v-btn  v-if="$store.state.isUserLoggedIn"
           flat
           dark
           @click="logout">
           Log Out
-        </v-btn>
+        </v-btn-->
     </v-toolbar-items>
 
     <v-btn icon
@@ -62,22 +62,33 @@
       <v-icon>account_box</v-icon><span class="headerElementSpan">{{$store.state.user.email}}</span>
     </div>
 
+    <v-tooltip bottom v-if="$store.state.isUserLoggedIn">
+      <template v-slot:activator="{ on }">
+        <v-btn icon
+          v-on="on"
+          @click="logout()">
+          <v-icon>exit_to_app</v-icon>
+        </v-btn>
+      </template>
+      <span>Logout</span>
+    </v-tooltip>
+
     <v-btn icon>
-      <v-icon>more_vert</v-icon>
+          <v-icon>more_vert</v-icon>
     </v-btn>
   </v-toolbar>
 </template>
 
 <script>
-
 export default {
+  components: {},
   methods: {
     navigateTo (route) {
       this.$router.push(route)
     },
     logout () {
       this.$store.dispatch('setToken', null)
-      this.$store.dispatch('setUser, null')
+      this.$store.dispatch('setUser', null)
       this.$router.push({
         name: 'root'
       })

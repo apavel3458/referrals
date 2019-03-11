@@ -30,7 +30,6 @@
 
 <script>
 import AuthenticationService from '@/services/AuthenticationService'
-import Panel from '@/components/Panel'
 export default {
   name: 'HelloWorld',
   data () {
@@ -40,7 +39,7 @@ export default {
       error: ''
     }
   },
-  components: {Panel},
+  components: {},
   methods: {
     async login () {
       try {

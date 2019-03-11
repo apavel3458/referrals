@@ -6,6 +6,7 @@ import Login from '@/components/Login'
 import Dashboard from '@/components/Dashboard'
 import CreateReferral from '@/components/referral/CreateReferral'
 import ViewReferral from '@/components/referral/ViewReferral'
+import EditReferral from '@/components/referral/EditReferral'
 
 Vue.use(Router)
 
@@ -40,6 +41,11 @@ export default new Router({
       path: '/referrals/:referralId',
       name: 'referral',
       component: ViewReferral
+    },
+    {
+      path: '/referrals/:referralId/edit',
+      name: 'edit-referral',
+      component: EditReferral
     }
   ]
 })

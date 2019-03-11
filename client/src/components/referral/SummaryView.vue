@@ -7,7 +7,7 @@
         {{ patient.lastName }}, {{ patient.firstName }}
       </div>
       <div class="subhead">
-        <span class="subsubhead"><span class="infoHeader">DOB:</span> {{ patient.dob | moment("YYYY-MM-DD") }}</span>
+        <span class="subsubhead"><span class="infoHeader">DOB:</span> {{ formatDate(patient.dob) }}</span>
         <span class="subsubhead"><span class="infoHeader">LHSC PIN:</span>{{ patient.pin }}</span>
       </div>
     </v-flex>
@@ -16,8 +16,8 @@
         Referring: {{ patient.referringAttending }}
       </div>
       <div class="subhead">
-        <span class="subsubhead"><span class="infoHeader">Referring Name:</span> ({{ patient.referringEmail }})</span>
-        <span class="subsubhead"><span class="infoHeader">Date Seen in ER:</span>{{ patient.dateSeenInER | moment("YYYY-MM-DD") }}</span>
+        <span class="subsubhead"><span class="infoHeader">Referring Name:</span> {{patient.referringName}} ({{ patient.referringEmail }})</span>
+        <span class="subsubhead"><span class="infoHeader">Date Seen in ER:</span>{{ formatDate(patient.dateSeenInER) }}</span>
       </div>
     </v-flex>
 
@@ -43,13 +43,18 @@
 </template>
 
 <script>
-import Panel from '@/components/Panel'
+import moment from 'Moment'
 export default {
-  components: {Panel},
+  components: {},
   props: {
     patient: {
       type: Object,
       required: true
+    }
+  },
+  methods: {
+    formatDate (d) {
+      return moment(d, 'YYYY-MM-DD')
     }
   }
 }
@@ -59,6 +64,7 @@ export default {
 <style scoped>
 .infoBox {
   text-align: left;
+  margin: 10px auto;
 }
 .head {
   font-weight: bold;

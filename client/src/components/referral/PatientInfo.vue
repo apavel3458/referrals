@@ -98,6 +98,9 @@
                               label="Date Seen in ER"
                               prepend-icon="event"
                               readonly
+                              return-masked-value
+                              :rules="[() => !!pt.dateSeenInER || 'This field is required']"
+                              mask="####-##-##"
                               v-on="on"
                             ></v-text-field>
                           </template>

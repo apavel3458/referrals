@@ -10,11 +10,14 @@ import 'vuetify/dist/vuetify.min.css'
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
 import store from '@/store/store'
 import VueMoment from 'vue-moment'
+import Panel from '@/components/globals/Panel'
 
 Vue.config.productionTip = false
 
 Vue.use(Vuetify)
 Vue.use(VueMoment)
+
+Vue.component('panel', Panel)
 
 sync(store, router)
 
