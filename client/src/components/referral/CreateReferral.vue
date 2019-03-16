@@ -183,7 +183,7 @@ import PatientInfo from '@/components/referral/PatientInfo'
 import TestSelection from '@/components/referral/TestSelection'
 import SummaryView from '@/components/referral/SummaryView'
 import ReferralService from '@/services/ReferralService'
-import Vue from 'Vue'
+import Vue from 'vue'
 
 export default {
   data () {
@@ -215,7 +215,7 @@ export default {
     menu (val) {
       val && this.$nextTick(() => (this.$refs.picker.activePicker = 'YEAR'))
     },
-    e1 (val) {
+    e1 () {
       if (this.e1 === 1) {
         this.referenceId = null
         this.errorMessage = null
@@ -256,7 +256,7 @@ export default {
         this.e1 = 5
       } catch (err) {
         this.errorMessage = err
-        console.log(err)
+        // console.log(err)
       }
     },
     validatePtInfo () {
@@ -264,8 +264,6 @@ export default {
       this.eventBus.$emit('validatePtInfoEvent')
       if (this.ptInfoValid) {
         this.e1 = 3
-      } else {
-
       }
     }
   }

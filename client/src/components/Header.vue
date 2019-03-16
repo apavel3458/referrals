@@ -52,7 +52,7 @@
 
     <v-btn icon
       v-if="!$store.state.isUserLoggedIn"
-      click="navigateTo('register')">
+      @click="navigateTo('register')">
       <v-icon>account_box</v-icon>
     </v-btn>
 

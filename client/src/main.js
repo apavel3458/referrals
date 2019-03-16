@@ -5,12 +5,10 @@ import App from './App'
 import router from './router'
 import Vuetify from 'vuetify'
 import { sync } from 'vuex-router-sync'
-import 'babel-polyfill'
-import 'vuetify/dist/vuetify.min.css'
-import 'material-design-icons-iconfont/dist/material-design-icons.css'
 import store from '@/store/store'
 import VueMoment from 'vue-moment'
 import Panel from '@/components/globals/Panel'
+import 'vuetify/dist/vuetify.min.css'
 
 Vue.config.productionTip = false
 

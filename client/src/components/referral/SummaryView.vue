@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import moment from 'Moment'
+import moment from 'moment'
 export default {
   components: {},
   props: {

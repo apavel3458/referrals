@@ -1,14 +1,10 @@
 <template>
-  <div id="app">
-    <v-app>
-      <page-header/>
-      <main>
-        <v-container fluid>
-          <router-view/>
-        </v-container>
-      </main>
-    </v-app>
-  </div>
+  <v-app>
+    <page-header />
+    <v-content>
+      <router-view/>
+    </v-content>
+  </v-app>
 </template>
 
 <script>
@@ -18,10 +14,14 @@ export default {
   name: 'App',
   components: {
     PageHeader
+  },
+  data () {
+    return {
+      //
+    }
   }
 }
 </script>
-
 <style>
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;

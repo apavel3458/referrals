@@ -43,7 +43,7 @@
 <script>
 import ReferralService from '@/services/ReferralService'
 import PatientInfo from './PatientInfo'
-import Vue from 'Vue'
+import Vue from 'vue'
 
 export default {
   data () {

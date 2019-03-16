@@ -117,7 +117,7 @@
 
 <script>
 import ReferralService from '@/services/ReferralService'
-import Moment from 'Moment'
+import Moment from 'moment'
 import _ from 'lodash'
 
 export default {

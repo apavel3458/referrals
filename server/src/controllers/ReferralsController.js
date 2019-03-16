@@ -37,7 +37,7 @@ module.exports = {
 
     async show(req, res) {
         try {
-            const referral = await Referral.findById(req.params.referralId)
+            const referral = await Referral.findByPk(req.params.referralId)
             res.send(referral)
         } catch (err) {
             console.log("Error: ", err)

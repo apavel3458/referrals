@@ -1,18 +1,16 @@
 /* eslint-disable no-console */
-
 // eslint-disable-next-line no-console
-
 const express = require('express')
-const bodyParser = require ('body-parser')
+const bodyParser = require('body-parser')
 const cors = require('cors')
 const morgan = require('morgan')
-const {sequelize} = require('./models')
+const {sequelize} = require("./models")
 const config = require ('./config/config')
 
 const app = express()
-app.use(morgan('combined'))
+app.use(morgan('dev'))
 app.use(bodyParser.json())
-app.use(cors()) //allow anyone to access server
+app.use(cors())
 
 require('./routes')(app)
 
