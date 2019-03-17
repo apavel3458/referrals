@@ -3,6 +3,7 @@ const AuthenticationControllerPolicy = require('./policies/AuthenticationControl
 const ReferralsController = require('./controllers/ReferralsController')
 
 
+
 module.exports = (app) => {
     app.post('/register', 
         AuthenticationControllerPolicy.register,

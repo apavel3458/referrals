@@ -1,13 +1,6 @@
-/* eslint-disable no-unused-vars */
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define('User', {
-    firstName: {
-      type: DataTypes.STRING
-    },
-    lastName: {
-      type: DataTypes.STRING
-    },
     email: {
       type: DataTypes.STRING,
       unique: true,
@@ -19,15 +12,16 @@ module.exports = (sequelize, DataTypes) => {
     },
     loginAttempts: {
       type: DataTypes.INTEGER,
-      defaultValue: 0
+      defaultValue: true
     },
     disabled: {
       type: DataTypes.BOOLEAN,
       defaultValue: false
     }
   }, {});
+  // eslint-disable-next-line no-unused-vars
   User.associate = function(models) {
-    User.belongsToMany(models.UserGroup, {through: 'UserGroupLink'})
+    User.hasMany(models.UserGroup, {})
   };
   return User;
 };
