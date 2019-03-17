@@ -132,6 +132,7 @@ export default {
   components: {
   },
   watch: {
+    // eslint-disable-next-line no-unused-vars
     searchText (search) {
       const route = {
         name: 'dashboard'

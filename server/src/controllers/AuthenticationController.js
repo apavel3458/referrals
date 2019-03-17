@@ -36,7 +36,7 @@ module.exports = {
     async register(req, res) {
         try {
             const captchaPassed = assessCaptcha(req, res)
-            console.log('CAPATCH APASSED: ' + captchaPassed)
+            //console.log('CAPATCH APASSED: ' + captchaPassed)
             if (!captchaPassed) return
 
             const user = await User.create(req.body)
