@@ -35,10 +35,13 @@
                 <td class="text-xs-center pa-0" :class="{inactive:!props.item.active}">{{ props.item.firstName }}</td>
                 <td class="text-xs-center pa-0" :class="{inactive:!props.item.active}">{{ props.item.lastName }}</td>
                 <td class="text-xs-center pa-0" :class="{inactive:!props.item.active}">{{ props.item.email }}</td>
-                <td class="text-xs-center pa-0" :class="{inactive:!props.item.active}" v-if="!$vuetify.breakpoint.smAndDown">{{ formatDate(props.item.lastLogin) }}</td>
+                <td class="text-xs-center pa-0" :class="{inactive:!props.item.active}" 
+                    v-if="!$vuetify.breakpoint.smAndDown">
+                    {{ formatDate(props.item.lastLogin) }}
+                </td>
                 <td class="text-xs-center pa-0" :class="{inactive:!props.item.active}">
                     <v-btn :class="[{activate:props.item.active}]"
-                     fab small outline color="purple lighten-2" 
+                     fab small outline color="purple lighten-1" 
                      v-if="!props.item.active"
                      class="ma-0 pa-0" @click="toggleDisableUser(props.item)">
                         <v-icon>
@@ -46,7 +49,7 @@
                         </v-icon>
                     </v-btn>
                     <v-btn :class="[{activate:props.item.active}]"
-                     fab small outline color="green lighten-2" 
+                     fab small outline color="green lighten-1" 
                      v-if="props.item.active"
                      class="ma-0 pa-0" @click="toggleDisableUser(props.item)">
                         <v-icon>
@@ -56,13 +59,13 @@
                 </td>
                 <td class="text-xs-center pa-0 text-no-wrap" :class="{inactive:!props.item.active}">
 
-                    <v-btn small fab outline color="blue lighten-2" @click="editUserDialog(props.item)">
+                    <v-btn small fab outline color="blue" @click="editUserDialog(props.item)">
                         <v-icon>
                             build
                         </v-icon>
                     </v-btn>
                     
-                    <v-btn small fab outline color="red lighten-3" class="ma-0 pa-0" icon @click="deleteUser(props.item)">
+                    <v-btn small fab outline color="red lighten-1" class="ma-0 pa-0" icon @click="deleteUser(props.item)">
                           <v-icon>
                             delete
                           </v-icon>
@@ -77,13 +80,13 @@
       </v-flex>
     </v-layout>
 
-                        <v-dialog v-model="dialog" persistent max-width="600px">
+                        <v-dialog v-model="dialog" max-width="600px">
                         <v-card>
                             <v-card-title>
                             <span class="headline">Edit User: {{dialogUser.id}}</span>
                             </v-card-title>
                             <v-card-text>
-                                <user-edit v-bind:user="dialogUser"></user-edit>
+                                <user-edit v-bind:user="dialogUser" :groups="groups"></user-edit>
                             </v-card-text>
                             <v-card-actions>
                             <v-spacer></v-spacer>
@@ -110,6 +113,7 @@ export default {
             dialog: false,
             dialogUser: {},
             users: [],
+            groups: [],
             headers: [
                 { text: 'Last Name', value: 'lastName' },
                 {
@@ -190,6 +194,7 @@ export default {
         },
         async loadData() {
             this.users = (await UserService.index(this.search)).data
+            this.groups = (await UserService.groups()).data
         },
 
 

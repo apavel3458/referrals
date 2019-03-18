@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-console */
-const {User} = require('../models')
+const {User, UserGroup} = require('../models')
 const { Op } = require('sequelize');
 
 module.exports = {
@@ -38,12 +38,40 @@ module.exports = {
 
     async put(req, res) {
         try {
-            const user = await User.update(req.body, {
+            const user =User.update(req.body, {
                 where: {
                     id: req.params.userId
                 },
-                individualHooks: true
+                individualHooks: true,
+                include: [{
+                    model: UserGroup
+                }]
+            }).then(users => {
+                users.forEach(u => {
+                    console.log("USER: " + JSON.stringify(u))
+                    req.body.groups.forEach((item =>  {
+                        const foundGroup = UserGroup.findOne({
+                            where: {
+                                id: item
+                            },
+                            include: [{
+                                model: User
+                            }]
+                        }).then(foundGroup => {
+                            console.log("USER")
+                            foundGroup.getUsers().then(uus => {
+                                uus.forEach(uu => {
+                                    foundGroup.removeUsers(uu)
+                                })
+                            })
+                            foundGroup.addUsers(u)
+                            foundGroup.update()
+                        })
+                        
+                    }))
+                })
             })
+            
             res.send(user)
         } catch (err) {
             console.log("Error: ", err)
@@ -66,6 +94,18 @@ module.exports = {
             console.log("Error: ", err)
             res.status(500).send({
                 error: 'An error has occured trying to fetch referrals.'
+            })
+        }
+    },
+
+    async groups(req, res) {
+        try {
+            const userGroups = await UserGroup.findAll()
+            res.send(userGroups)
+        } catch (err) {
+            console.log("Error: ", err)
+            res.status(500).send({
+                error: 'An error has occured trying to fetch users.'
             })
         }
     },

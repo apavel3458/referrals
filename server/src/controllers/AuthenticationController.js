@@ -5,9 +5,11 @@ const config = require('../config/config')
 const request = require('request')
 
 function jwtSignUser(user) {
+    // eslint-disable-next-line no-unused-vars
     const ONE_WEEK = 60*60*24*7
+    const ONE_HOUR = 60*60
     return jwt.sign(user, config.authentication.jwtSecret, {
-        expiresIn: ONE_WEEK
+        expiresIn: ONE_HOUR
     })
 }
 
@@ -23,7 +25,7 @@ function assessCaptcha(req, res) {
     request(verifyUrl, (err, response, body) => {
         body = JSON.parse(body)
         if (body.success !== undefined && !body.success) {
-            res.status(403).send({
+            res.status(412).send({
                 error: 'Please select captcha'
             })
             return false
@@ -47,7 +49,7 @@ module.exports = {
                 token: jwtSignUser(userJson)
             })
         } catch (err) {
-            res.status(403).send({
+            res.status(412).send({
                 error: 'This email account is already in use.'
             })
         }
@@ -63,13 +65,13 @@ module.exports = {
             })
             
             if (!user) {
-                return res.status(403).send({
+                return res.status(401).send({
                     error: 'The login information is incorrect'
                 })
             }
 
             if (!user.active) {
-                return res.status(403).send({
+                return res.status(401).send({
                     error: 'User disabled, please contact your administrator'
                 })
             }
@@ -81,11 +83,15 @@ module.exports = {
                     user.active = false
                 }
                 await user.save()
-                return res.status(403).send({
+                return res.status(401).send({
                     error: 'The login information is incorrect'
                 })
             }
             
+            user.loginCount = user.loginCount+1
+            user.lastLogin = new Date()
+            await user.save()
+
             const userJson = user.toJSON()
             return res.send({
                 user: userJson,

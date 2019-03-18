@@ -12,6 +12,8 @@ app.use(morgan('dev'))
 app.use(bodyParser.json())
 app.use(cors())
 
+require('./passport')
+
 require('./routes')(app)
 
 sequelize.sync()

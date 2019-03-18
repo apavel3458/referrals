@@ -57,6 +57,9 @@ export default {
         this.error = error.response.data.error
       }
     }
+  },
+  mounted() {
+    this.error = this.$route.params.error || ''
   }
 }
 </script>

@@ -62,7 +62,7 @@
       <v-icon>account_box</v-icon><span class="headerElementSpan">{{$store.state.user.email}}</span>
     </div>
 
-    <v-tooltip bottom v-if="$store.state.isUserLoggedIn">
+    <v-tooltip bottom v-if="isUserLoggedIn">
       <template v-slot:activator="{ on }">
         <v-btn icon
           v-on="on"
@@ -80,8 +80,15 @@
 </template>
 
 <script>
+import {mapState} from 'vuex'
+
 export default {
   components: {},
+  computed: {
+    ...mapState([
+      'isUserLoggedIn'
+    ])
+  },
   methods: {
     navigateTo (route) {
       this.$router.push(route)

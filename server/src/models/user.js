@@ -38,15 +38,22 @@ module.exports = (sequelize, DataTypes) => {
     },
     loginAttempts: {
       type: DataTypes.INTEGER,
-      defaultValue: 0
+      defaultValue: 0,
+      allowNull: false
     },
     active: {
       type: DataTypes.BOOLEAN,
-      defaultValue: true
+      defaultValue: true,
+      allowNull: false
     },
     lastLogin: {
       type: DataTypes.DATE,
-      defaultValue: null
+      defaultValue: null,
+    },
+    loginCount: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+      allowNull: false
     }
   }, {
     hooks: {

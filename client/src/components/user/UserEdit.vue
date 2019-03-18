@@ -18,19 +18,35 @@
               <v-flex xs12>
                 <v-text-field label="Password*" type="password" v-model="user.password"></v-text-field>
               </v-flex>
-              <v-flex xs12 sm6>
-                <v-select
-                  :items="['0-17', '18-29', '30-54', '54+']"
-                  label="Age*"
-                  required
-                ></v-select>
+              <v-flex xs4>
+                <v-text-field label="Login Count" type="text" disabled v-model="user.loginCount"></v-text-field>
+              </v-flex>
+              <v-flex xs4>
+                <v-text-field label="Active" type="text" disabled v-model="user.active"></v-text-field>
+              </v-flex>
+              <v-flex xs4>
+                <v-text-field label="Login Attempts" type="text" disabled v-model="user.loginAttempts"></v-text-field>
+              </v-flex>
+              <v-flex xs4>
+                <v-text-field label="Date Created" type="text" disabled :placeholder="formatDate(user.createdAt)"></v-text-field>
+              </v-flex>
+              <v-flex xs4>
+                <v-text-field label="Date Updated" type="text" disabled :placeholder="formatDate(user.updatedAt)"></v-text-field>
+              </v-flex>
+              <v-flex xs4>
+                <v-text-field label="Last Login" type="text" disabled :placeholder="formatDate(user.lastLogin)"></v-text-field>
               </v-flex>
               <v-flex xs12 sm6>
-                <v-autocomplete
-                  :items="['Skiing', 'Ice hockey', 'Soccer', 'Basketball', 'Hockey', 'Reading', 'Writing', 'Coding', 'Basejump']"
-                  label="Interests"
-                  multiple
-                ></v-autocomplete>
+                <v-select
+                    v-model="user.groups"
+                    :items="groups"
+                    item-text="groupName"
+                    item-value="id"
+                    chips
+                    label="Groups"
+                    multiple
+                    solo
+                ></v-select>
               </v-flex>
             </v-layout>
           </v-container>
@@ -39,22 +55,34 @@
 </template>
 
 <script>
-
+import Moment from 'moment'
 export default {
     props: {
         user: {
             type: Object,
             required: true
+        },
+        groups: {
+            type: Array,
+            required: false,
+            defaultValue: []
         }
   },
     data() {
         return {
-            
         }
     },
     watchers: {
     },
     methods: {
+        formatDate (d) {
+            const ndate = new Moment(d)
+            if (!ndate.isValid()) {
+                return '---'
+            } else {
+                return ndate.format('YYYY-MM-DD HH:MM')
+            }
+        },
     }
 
 }

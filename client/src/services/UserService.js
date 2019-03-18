@@ -13,7 +13,10 @@ export default {
   },
   delete (user) {
     return Api().post(`user/${user.id}/delete`, user)
-}
+  },
+  groups () {
+    return Api().post(`groups`)
+  }
 }
 
 // AuthenticationService.register({
