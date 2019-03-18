@@ -27,9 +27,13 @@ module.exports = {
         type: Sequelize.INTEGER,
         defaultValue: 0
       },
-      disabled: {
+      active: {
         type: Sequelize.BOOLEAN,
-        defaultValue: false
+        defaultValue: true
+      },
+      lastLogin: {
+        allowNull: true,
+        type: Sequelize.DATE
       },
       createdAt: {
         allowNull: false,

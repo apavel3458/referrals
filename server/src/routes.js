@@ -1,6 +1,7 @@
 const AuthenticationController = require('./controllers/AuthenticationController')
 const AuthenticationControllerPolicy = require('./policies/AuthenticationControllerPolicy')
 const ReferralsController = require('./controllers/ReferralsController')
+const UserController = require('./controllers/UserController')
 
 
 
@@ -26,4 +27,13 @@ module.exports = (app) => {
 
     app.put('/referrals/:referralId',
         ReferralsController.put)
+
+    app.get('/user',
+        UserController.index)
+
+    app.put('/user/:userId',
+        UserController.put)
+
+    app.post('/user/:userId/delete',
+        UserController.delete)
 }

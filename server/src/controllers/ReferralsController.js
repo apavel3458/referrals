@@ -78,7 +78,7 @@ module.exports = {
 
     async delete(req, res) {
         try {
-            const referral = await Referral.findById(req.params.referralId)
+            //const referral = await Referral.findById(req.params.referralId)
             Referral.destroy({
                 where: {
                     id: req.body.id

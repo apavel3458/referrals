@@ -67,9 +67,20 @@ module.exports = {
                     error: 'The login information is incorrect'
                 })
             }
+
+            if (!user.active) {
+                return res.status(403).send({
+                    error: 'User disabled, please contact your administrator'
+                })
+            }
             
             const isPasswordValid = await user.comparePassword(password)
             if (!isPasswordValid) {
+                user.loginAttempts = user.loginAttempts+1
+                if (user.loginAttempts >=2) {
+                    user.active = false
+                }
+                await user.save()
                 return res.status(403).send({
                     error: 'The login information is incorrect'
                 })
