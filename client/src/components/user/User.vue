@@ -18,7 +18,7 @@
             </v-toolbar>
 
             <v-data-table
-            :headers="headers"
+            :headers="computedHeaders"
             :items="users"
             :search="search"
             :rows-per-page-items="rowsPerPage"
@@ -35,21 +35,37 @@
                 <td class="text-xs-center pa-0" :class="{inactive:!props.item.active}">{{ props.item.firstName }}</td>
                 <td class="text-xs-center pa-0" :class="{inactive:!props.item.active}">{{ props.item.lastName }}</td>
                 <td class="text-xs-center pa-0" :class="{inactive:!props.item.active}">{{ props.item.email }}</td>
-                <td class="text-xs-center pa-0" :class="{inactive:!props.item.active}" >{{ formatDate(props.item.lastLogin) }}</td>
+                <td class="text-xs-center pa-0" :class="{inactive:!props.item.active}" v-if="!$vuetify.breakpoint.smAndDown">{{ formatDate(props.item.lastLogin) }}</td>
                 <td class="text-xs-center pa-0" :class="{inactive:!props.item.active}">
-                    <v-btn small v-if="!props.item.active" class="ma-0 pa-0" @click="toggleDisableUser(props.item)">
-                        Activate
+                    <v-btn :class="[{activate:props.item.active}]"
+                     fab small outline color="purple lighten-2" 
+                     v-if="!props.item.active"
+                     class="ma-0 pa-0" @click="toggleDisableUser(props.item)">
+                        <v-icon>
+                            remove_circle
+                        </v-icon>
                     </v-btn>
-                    <v-btn small v-if="props.item.active" class="ma-0 pa-0" @click="toggleDisableUser(props.item)">
-                        Disable
+                    <v-btn :class="[{activate:props.item.active}]"
+                     fab small outline color="green lighten-2" 
+                     v-if="props.item.active"
+                     class="ma-0 pa-0" @click="toggleDisableUser(props.item)">
+                        <v-icon>
+                            text_format
+                        </v-icon>
                     </v-btn>
                 </td>
                 <td class="text-xs-center pa-0 text-no-wrap" :class="{inactive:!props.item.active}">
 
-                    <v-btn small @click="editUserDialog(props.item)">Edit</v-btn>
+                    <v-btn small fab outline color="blue lighten-2" @click="editUserDialog(props.item)">
+                        <v-icon>
+                            build
+                        </v-icon>
+                    </v-btn>
                     
-                    <v-btn small class="ma-0 pa-0" @click="deleteUser(props.item)">
-                        Delete
+                    <v-btn small fab outline color="red lighten-3" class="ma-0 pa-0" icon @click="deleteUser(props.item)">
+                          <v-icon>
+                            delete
+                          </v-icon>
                     </v-btn>
             </td>
             </template>
@@ -103,11 +119,16 @@ export default {
                     value: 'firstName'
                 },
                 { text: 'E-Mail', value: 'email', align: 'center'},
-                { text: 'Last Login', value: 'lastLogin', align: 'center'},
-                { text: 'Active', value: 'active', align: 'center'},
+                { text: 'Last Login', value: 'lastLogin', align: 'center', hide: 'smAndDown'},
+                { text: 'Active?', value: 'active', align: 'center', width: 20},
                 { text: 'Actions', value: 'actions', align: 'center'}
             ],
             rowsPerPage: [10,20,25, {"text":"$vuetify.dataIterator.rowsPerPageAll","value":-1}]
+        }
+    },
+    computed: {
+        computedHeaders () {
+            return this.headers.filter(h => !h.hide || !this.$vuetify.breakpoint[h.hide])  
         }
     },
     methods: {
@@ -120,6 +141,10 @@ export default {
             }
         },
         async toggleDisableUser (user) {
+            const action = user.active?'BLOCK': 'ACTIVATE'
+            if (!confirm(`Are you sure you want to ${action} ${user.firstName} ${user.lastName} (${user.email})`)) {
+                return
+            }
             const index = this.users.indexOf(user)
             const selected = this.users[index]
             selected.active = !selected.active
