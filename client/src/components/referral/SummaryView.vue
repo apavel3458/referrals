@@ -7,7 +7,7 @@
         {{ patient.lastName }}, {{ patient.firstName }}
       </div>
       <div class="subhead">
-        <span class="subsubhead"><span class="infoHeader">DOB:</span> {{ formatDate(patient.dob) }}</span>
+        <span class="subsubhead"><span class="infoHeader">DOB:</span> {{ patient.dob }}</span></br>
         <span class="subsubhead"><span class="infoHeader">LHSC PIN:</span>{{ patient.pin }}</span>
       </div>
     </v-flex>
@@ -16,8 +16,10 @@
         Referring: {{ patient.referringAttending }}
       </div>
       <div class="subhead">
-        <span class="subsubhead"><span class="infoHeader">Referring Name:</span> {{patient.referringName}} ({{ patient.referringEmail }})</span>
-        <span class="subsubhead"><span class="infoHeader">Date Seen in ER:</span>{{ formatDate(patient.dateSeenInER) }}</span>
+        <span class="subsubhead"><span class="infoHeader">Referring Name:</span> {{patient.referringName}}</span><br/>
+        <span class="subsubhead"><span class="infoHeader">Referring Email:</span>({{ patient.referringEmail }})</span>
+        <br/>
+        <span class="subsubhead"><span class="infoHeader">Date Seen in ER:</span>{{patient.dateSeenInER }}</span>
       </div>
     </v-flex>
 
@@ -69,15 +71,21 @@ export default {
 .head {
   font-weight: bold;
   font-size: 1.2rem;
+  margin-left: 20px;
 }
 .head2 {
   font-weight: bold;
+  margin-left: 20px;
 }
 .subhead {
   color: grey;
+  margin-left: 40px;
 }
 .subsubhead {
   white-space: nowrap;
+}
+.centerText {
+  text-align: center; width: 100%; display:inline-block
 }
 .infoHeader {
   font-weight: bold;
