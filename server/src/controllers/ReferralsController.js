@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-console */
-const {Referral} = require('../models')
-const { Op } = require('sequelize');
+const Referral = require('../models/referral')
 
 module.exports = {
     async index(req, res) {
@@ -9,21 +8,21 @@ module.exports = {
             let referral = null
             const search = req.query.search
             if (search) {
-                referral = await Referral.findAll({
-                    where: {
-                        [Op.or]: [
-                            'lastName', 'firstName', 'referringName', 'referringAttending'
-                        ].map( key => ({
-                            [key]: {
-                                [Op.like]: `%${search}%` 
-                            }
-                        }))
-                    }
-                })
+                referral = await Referral.query()
+                .where('firstName', 'like', `%${search}%`)
+                .orWhere('lastName', 'like', `%${search}%`)
+                .orWhere('referringEmail', 'like', `%${search}%`)
+                .orWhere('referringName', 'like', `%${search}%`)
+                .orWhere('referringAttending', 'like', `%${search}%`)
+                .orWhere('pin', 'like', `%${search}%`)
+                .orderBy('createdAt', 'DESC')
+                .limit(req.query.max)
             } else {
-                referral = await Referral.findAll({
-                    limit: 10
-                })
+                // if (req.query.max) {
+                //     referral = await Referral.query().orderBy('createdAt', 'DESC').limit(req.query.max)
+                // } else {
+                    referral = await Referral.query().orderBy('createdAt', 'DESC').limit(req.query.max || 10000000)
+                // }
             }
             res.send(referral)
             
@@ -37,7 +36,7 @@ module.exports = {
 
     async show(req, res) {
         try {
-            const referral = await Referral.findByPk(req.params.referralId)
+            const referral = await Referral.query().findById(req.params.referralId)
             res.send(referral)
         } catch (err) {
             console.log("Error: ", err)
@@ -49,11 +48,7 @@ module.exports = {
 
     async put(req, res) {
         try {
-            const referral = await Referral.update(req.body, {
-                where: {
-                    id: req.params.referralId
-                }
-            })
+            const referral = await Referral.query().patchAndFetchById(req.params.referralId, req.body)
             res.send(referral)
         } catch (err) {
             console.log("Error: ", err)
@@ -65,11 +60,10 @@ module.exports = {
 
     async add(req, res) {
         try {
-            console.log(req.body)
-            const referral = await Referral.create(req.body)
-            console.log(referral)
+            const referral = await Referral.query().insert(req.body)
             res.send(referral)
         } catch (err) {
+            console.log(err)
             res.status(500).send({
                 error: 'An error has occured trying to create a referral.'
             })
@@ -79,11 +73,7 @@ module.exports = {
     async delete(req, res) {
         try {
             //const referral = await Referral.findById(req.params.referralId)
-            Referral.destroy({
-                where: {
-                    id: req.body.id
-                }
-            })
+            await Referral.query().deleteById(req.body.id)
             res.send(true)
         } catch (err) {
             console.log("Error: ", err)

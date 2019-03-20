@@ -1,8 +1,8 @@
 /* eslint-disable vue/valid-template-root */
 <template>
   <v-container grid-list-md text-xs-center>
-    <v-layout row wrap>
-      <v-flex xs12 sm10 offset-sm1>
+    <v-layout  wrap>
+      <v-flex xs12>
         <v-card>
             <v-toolbar color="indigo lighten-1" dark>
                 <v-toolbar-side-icon></v-toolbar-side-icon>
@@ -149,13 +149,15 @@ export default {
             if (!confirm(`Are you sure you want to ${action} ${user.firstName} ${user.lastName} (${user.email})`)) {
                 return
             }
-            const index = this.users.indexOf(user)
-            const selected = this.users[index]
+            const selected = this.users[this.users.indexOf(user)]
             selected.active = !selected.active
             selected.loginAttempts = 0
             try {
-                if ((await UserService.put(selected)).data.error) {
+                var reply = (await UserService.put(selected)).data
+                if (reply.error) {
                     throw new Error("Server Error")
+                } else {
+                    this.selected = reply
                 }
             } catch (err) {
                 alert("Error on page: " + err)
@@ -164,8 +166,11 @@ export default {
         },
         async updateUser(user) {
             try {
-                if ((await UserService.put(user)).data.error) {
+                var reply = (await UserService.put(user)).data
+                if (reply.error) {
                     throw new Error("Server Error")
+                } else {
+                    this.users.splice(this.users.indexOf(user), 1, reply)
                 }
             } catch (err) {
                 alert("Error on page: " + err)

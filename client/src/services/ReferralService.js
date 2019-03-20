@@ -4,9 +4,13 @@ export default {
   index (search) {
     return Api().get('referrals/index', {
       params: {
-        search: search
+        search: search,
+        max: 30
       }
     })
+  },
+  all () {
+    return Api().get('referrals/index')
   },
   show (referralId) {
     return Api().get(`referrals/${referralId}`)

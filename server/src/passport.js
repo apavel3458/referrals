@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 const passport = require('passport')
 // eslint-disable-next-line no-unused-vars
-const {User} = require('./models')
+const User = require('./models/user')
 const config = require('./config/config')
 
 const JwtStrategy = require('passport-jwt').Strategy

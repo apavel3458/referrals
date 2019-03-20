@@ -60,6 +60,8 @@ export default {
   },
   mounted() {
     this.error = this.$route.params.error || ''
+    this.$store.dispatch('setToken', null)
+    this.$store.dispatch('setUser', null)
   }
 }
 </script>

@@ -3,7 +3,7 @@
       "firstName": "Pavelaaa",
       "lastName": "Antiperovitch",
       "email": "apavel@gmail.com",
-      "password": "asdfasdf",
+      "password": "$2a$08$yCqkXeWNUjul5MNNUtASw.fLxWMF/ofGytwKND/KWtDUnSFYsmx9m",
       "loginAttempts": 2,
       "active": true,
       "lastLogin": "2019-03-18T03:55:05.374Z",

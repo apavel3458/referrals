@@ -1,7 +1,9 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-console */
-const {User, UserGroup} = require('../models')
-const { Op } = require('sequelize');
+const User = require('../models/user')
+const UserGroup = require('../models/usergroup')
+const _ = require('lodash')
+const knex = require('knex');
 
 module.exports = {
     async index(req, res) {
@@ -9,21 +11,11 @@ module.exports = {
             let user = null
             const search = req.query.search
             if (search) {
-                user = await User.findAll({
-                    where: {
-                        [Op.or]: [
-                            'lastName', 'firstName', 'email'
-                        ].map( key => ({
-                            [key]: {
-                                [Op.like]: `%${search}%` 
-                            }
-                        }))
-                    }
-                })
+                user = await User.query().where('firstName', 'like', `%${search}%`)
+                                        .orWhere('lastName', 'like', `%${search}%`)
+                                        .orWhere('email', 'like', `%${search}%`)
             } else {
-                user = await User.findAll({
-                    limit: 40
-                })
+                user = await User.query()
             }
 
             res.send(user)
@@ -38,43 +30,21 @@ module.exports = {
 
     async put(req, res) {
         try {
-            const user =User.update(req.body, {
-                where: {
-                    id: req.params.userId
-                },
-                individualHooks: true,
-                include: [{
-                    model: UserGroup
-                }]
-            }).then(users => {
-                users.forEach(u => {
-                    console.log("USER: " + JSON.stringify(u))
-                    req.body.groups.forEach((item =>  {
-                        const foundGroup = UserGroup.findOne({
-                            where: {
-                                id: item
-                            },
-                            include: [{
-                                model: User
-                            }]
-                        }).then(foundGroup => {
-                            console.log("USER")
-                            foundGroup.getUsers().then(uus => {
-                                uus.forEach(uu => {
-                                    foundGroup.removeUsers(uu)
-                                })
-                            })
-                            foundGroup.addUsers(u)
-                            foundGroup.update()
-                        })
-                        
-                    }))
-                })
-            })
             
+            const userIn = req.body
+            
+            console.log(userIn)
+            const pwhashed = await User.hashPassword(userIn.password)
+            const user = await User.query().patchAndFetchById(userIn.id, userIn) //password is removed automatically
+            if (pwhashed) {//manually update password
+                await User.knex().from('users')
+                    .where({id: user.id})
+                    .update({ password: pwhashed })
+            }
+            console.log(user)
             res.send(user)
         } catch (err) {
-            console.log("Error: ", err)
+            console.log(err)
             res.status(500).send({
                 error: 'An error has occured trying to fetch user.'
             })
@@ -84,14 +54,9 @@ module.exports = {
     async delete(req, res) {
         try {
             //const user = await User.findOne(req.params.userId)
-            User.destroy({
-                where: {
-                    id: req.body.id
-                }
-            })
+            await User.query().deleteById(req.body.id)
             res.send(true)
         } catch (err) {
-            console.log("Error: ", err)
             res.status(500).send({
                 error: 'An error has occured trying to fetch referrals.'
             })
@@ -100,7 +65,7 @@ module.exports = {
 
     async groups(req, res) {
         try {
-            const userGroups = await UserGroup.findAll()
+            const userGroups = await UserGroup.query()
             res.send(userGroups)
         } catch (err) {
             console.log("Error: ", err)

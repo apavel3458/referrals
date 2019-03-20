@@ -10,11 +10,7 @@
 
     <v-spacer></v-spacer>
 
-    <v-toolbar-items>
-
-    </v-toolbar-items>
-
-    <v-toolbar-items>
+    <v-toolbar-items class="hidden-sm-and-down">
         <v-btn
             v-if="$store.state.isUserLoggedIn"
             flat
@@ -36,46 +32,36 @@
             @click="navigateTo('login')">
           Login
         </v-btn>
-        <!--v-btn  v-if="!$store.state.isUserLoggedIn"
-          flat
-          dark
-          @click="navigateTo('register')">
-            Register
-        </v-btn-->
-        <!-- v-btn  v-if="$store.state.isUserLoggedIn"
-          flat
-          dark
-          @click="logout">
-          Log Out
-        </v-btn-->
-    </v-toolbar-items>
 
-    <v-btn icon
-      v-if="!$store.state.isUserLoggedIn"
-      @click="navigateTo('register')">
-      <v-icon>account_box</v-icon>
-    </v-btn>
+      <v-btn icon
+        v-if="!$store.state.isUserLoggedIn"
+        @click="navigateTo('register')">
+        <v-icon>account_box</v-icon>
+      </v-btn>
 
-    <div
-      v-if="$store.state.isUserLoggedIn"
-      class="headerElement">
-      <v-icon>account_box</v-icon><span class="headerElementSpan">{{$store.state.user.email}}</span>
-    </div>
+      
+      <v-btn flat dark v-if="$store.state.isUserLoggedIn">
+        <v-icon>account_box</v-icon>
+        {{$store.state.user.email}}
+      </v-btn>
+      </v-toolbar-items>
 
-    <v-tooltip bottom v-if="isUserLoggedIn">
-      <template v-slot:activator="{ on }">
-        <v-btn icon
-          v-on="on"
-          @click="logout()">
-          <v-icon>exit_to_app</v-icon>
-        </v-btn>
-      </template>
-      <span>Logout</span>
-    </v-tooltip>
+      <v-tooltip bottom v-if="isUserLoggedIn">
+        <template v-slot:activator="{ on }">
+          <v-btn icon
+            v-on="on"
+            @click="logout()">
+            <v-icon>exit_to_app</v-icon>
+          </v-btn>
+        </template>
+        <span>Logout</span>
+      </v-tooltip>
 
-    <v-btn icon>
-          <v-icon>more_vert</v-icon>
-    </v-btn>
+      <v-btn icon>
+            <v-icon>more_vert</v-icon>
+      </v-btn>
+
+
   </v-toolbar>
 </template>
 
@@ -116,7 +102,7 @@ export default {
   vertical-align: middle;
 }
 .headerElementSpan {
-  line-height: 1;
-  vertical-align: text-top;
+  line-height: 4;
+  vertical-align: middle;
 }
 </style>

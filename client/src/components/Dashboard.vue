@@ -1,22 +1,24 @@
 <template>
-  <v-container grid-list-md text-xs-center>
+  <v-container grid-list-xs text-xs-center fluid>
     <v-layout row wrap>
       <v-flex xs12 sm10 offset-sm1 md8 offset-md2>
        <v-card>
         <v-toolbar color="blue" dark>
           <v-toolbar-side-icon></v-toolbar-side-icon>
 
-          <v-toolbar-title>Dashboard</v-toolbar-title>
+          <v-toolbar-title>Referrals</v-toolbar-title>
 
           <v-spacer></v-spacer>
-
+          <v-btn icon @click="getXLSX">
+            <v-icon>get_app</v-icon>
+          </v-btn>
           <v-btn icon>
             <v-icon @click="searchActive = !searchActive">search</v-icon>
           </v-btn>
           <v-text-field
               v-if="searchActive"
               v-model="searchText"
-              label="Search Name, Referring Name"></v-text-field>
+              label="Search Name, Referring Name, PIN"></v-text-field>
 
           <v-btn icon>
             <v-icon>check_circle</v-icon>
@@ -49,14 +51,43 @@
                       <span class="subsubtitle">Referring: </span> {{ referral.referringName }}
                   </v-list-tile-sub-title>
                   <v-list-tile-sub-title>
-                      <span class="subsubtitle">Test Date:</span> (Pending)
-                      <span class="subsubtitle">Appointment:</span> (Pending)
+                      <v-icon color="green lighten-2" v-if="referral.clinicDate">check_circle</v-icon>
+                      <v-icon color="grey" v-if="!referral.clinicDate">help</v-icon>
+                      <span :class="[{schedulePending: !referral.clinicDate}, {scheduleDone: referral.clinicDate}]">
+                        <span class="subsubtitle" style="padding-left: 0px;">Clinic Date:</span> {{referral.clinicDate||'(Pending)'}} {{referral.clinicTime||''}}
+                        <span class="subsubtitle">Test:</span> {{referral.testDate||'(Pending)'}} {{referral.testTime||''}}
+                      </span>
                   </v-list-tile-sub-title>
                 </v-list-tile-content>
 
                 <v-list-tile-action>
                   <v-list-tile-action-text>{{fromNow(referral)}}</v-list-tile-action-text>
                   <div class="actionButtonWrapper">
+
+                    <v-tooltip top>
+                      <template v-slot:activator="{ on }">
+                        <v-btn @click.stop="schedule(referral)" icon ripple class="actionButton mr-1" v-on="on">
+                          <v-icon
+                            color="blue lighten-2">
+                            schedule
+                          </v-icon>
+                        </v-btn>
+                      </template>
+                      <span>Schedule</span>
+                    </v-tooltip>
+
+                    <v-tooltip top>
+                      <template v-slot:activator="{ on }">
+                        <v-btn :to="{name: 'edit-referral', params: {referralId: referral.id}}" icon ripple v-on="on" class="actionButton mr-1">
+                          <v-icon
+                            color="blue lighten-2">
+                            edit
+                          </v-icon>
+                        </v-btn>
+                      </template>
+                      <span>Edit</span>
+                    </v-tooltip>
+
                     <v-tooltip top>
                       <template v-slot:activator="{ on }">
                         <v-btn @click.stop="deleteReferral(referral)" icon ripple class="actionButton" v-on="on">
@@ -68,17 +99,7 @@
                       </template>
                       <span>Delete</span>
                     </v-tooltip>
-                    <v-tooltip top>
-                      <template v-slot:activator="{ on }">
-                        <v-btn :to="{name: 'edit-referral', params: {referralId: referral.id}}" icon ripple v-on="on" class="actionButton">
-                          <v-icon
-                            color="blue lighten-2">
-                            edit
-                          </v-icon>
-                        </v-btn>
-                      </template>
-                      <span>Edit</span>
-                    </v-tooltip>
+
                   </div>
                 </v-list-tile-action>
 
@@ -93,6 +114,7 @@
                 </v-list-tile-sub-title>
                 <v-list-tile-sub-title class="text--primary">
                   <span class="subsubtitle">Date Seen in ER:</span>{{formatDate(referral.dateSeenInER)}}
+                  <span class="subsubtitle">Pin:</span>{{referral.pin}}
                 </v-list-tile-sub-title>
                 <v-list-tile-sub-title class="text--primary">
                   <span class="subsubtitle">Comments: </span> {{referral.comments}}
@@ -111,6 +133,14 @@
         </v-list>
       </v-card>
       </v-flex>
+
+      <!-- Dialog boxes -------------------------- -->
+      <dashboard-schedule-dialog 
+      :referral="scheduleReferral" 
+      :dialogOpen="scheduleDialog"
+      v-on:dialogOpen="scheduleDialog = $event"
+      v-on:submitSchedule="submitSchedule($event)">
+      </dashboard-schedule-dialog>
     </v-layout>
   </v-container>
 </template>
@@ -119,17 +149,22 @@
 import ReferralService from '@/services/ReferralService'
 import Moment from 'moment'
 import _ from 'lodash'
+//import XLSX from 'xlsx'
+import XLSXDownload from './util/XLSXDownload'
 
 export default {
   data () {
     return {
       referrals: [],
+      scheduleDialog: false,
       activeReferral: null,
+      scheduleReferral: {},
       searchActive: true,
       searchText: ''
     }
   },
   components: {
+    DashboardScheduleDialog: () => import('./DashboardScheduleDialog')
   },
   watch: {
     // eslint-disable-next-line no-unused-vars
@@ -151,6 +186,7 @@ export default {
         this.searchText = value
       }
     }
+ 
   },
   methods: {
     async deleteReferral (obj) {
@@ -175,8 +211,31 @@ export default {
     },
     search: _.debounce(async function () {
       this.referrals = (await ReferralService.index(this.searchText)).data
-    }, 700)
-
+    }, 700),
+    schedule(referral) {
+      this.scheduleDialog = true
+      this.scheduleReferral = referral
+    },
+    async submitSchedule(scheduleData) {
+      var sendReferral = JSON.parse(JSON.stringify(this.scheduleReferral))
+      Object.assign(sendReferral, scheduleData)
+      try {
+        // eslint-disable-next-line no-unused-vars
+        const updated = (await ReferralService.put(sendReferral)).data
+        this.referrals.splice(this.referrals.indexOf(this.scheduleReferral), 1, updated)
+      } catch (err) {
+        this.errorMessage = 'Error: ' + err
+      }
+    },
+    async getXLSX() {
+      try {
+        const all = (await ReferralService.all()).data
+        XLSXDownload(document, all)
+      } catch (err) {
+        alert(err)
+      }
+      
+    }
   },
   async mounted () {
     this.referrals = (await ReferralService.index(this.searchText)).data
@@ -203,5 +262,15 @@ export default {
   }
   .item {
     border-bottom: 1px solid #e4e4e4;
+  }
+  .scheduleDone {
+    background-color: rgb(235, 255, 242);
+    padding: 0px 5px;
+    border-radius: 5px;
+  }
+  .schedulePending {
+    background-color: rgb(240, 240, 240);
+    padding: 0px 5px;
+    border-radius: 5px;
   }
 </style>

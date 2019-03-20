@@ -1,11 +1,16 @@
 /* eslint-disable vue/valid-template-root */
 <template>
   <div>
+  <v-container grid-list-md text-xs-center>
   <v-layout row>
-    <v-flex xs12 md8 offset-md2 wrap>
+    <v-flex xs12 sm10 offset-sm1 wrap>
       <panel title="Edit Referral" alignCenter="true" color="white" class="panel">
         <patient-info v-bind:pt="referral" :eventBus="eventBus" @validated="ptInfoValid = $event"></patient-info>
-
+        <v-select
+          :items="testOptions"
+          v-model="referral.testSelected"
+          label="Select Test"
+        ></v-select>
       <v-layout>
         <v-flex xs12>
           <v-alert
@@ -36,7 +41,7 @@
       </panel>
     </v-flex>
   </v-layout>
-
+  </v-container>
   </div>
 </template>
 
@@ -52,7 +57,10 @@ export default {
       eventBus: new Vue(),
       patientInfoValid: null,
       successMessage: null,
-      errorMessage: null
+      errorMessage: null,
+      testOptions: [
+        'Exercise Stress Echo', 'Nuclear Stress MIBI'
+      ]
     }
   },
   components: { PatientInfo },
