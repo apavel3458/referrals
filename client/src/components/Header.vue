@@ -16,7 +16,7 @@
             flat
             dark
             @click="navigateTo('dashboard')">
-          Dashboard
+          Referrals
         </v-btn>
         <v-btn
             v-if="$store.state.isUserLoggedIn"
@@ -25,17 +25,10 @@
             @click="navigateTo('admin-users')">
           Users
         </v-btn>
-        <v-btn
-          v-if="!$store.state.isUserLoggedIn"
-            flat
-            dark
-            @click="navigateTo('login')">
-          Login
-        </v-btn>
 
       <v-btn icon
         v-if="!$store.state.isUserLoggedIn"
-        @click="navigateTo('register')">
+        >
         <v-icon>account_box</v-icon>
       </v-btn>
 
@@ -70,7 +63,16 @@
           >
             <v-list-tile-title>Login</v-list-tile-title>
           </v-list-tile>
+          
           <v-list-tile
+            v-if="!isUserLoggedIn"
+            @click="$router.push({name: 'register'})"
+          >
+            <v-list-tile-title>Register</v-list-tile-title>
+          </v-list-tile>
+
+          <v-list-tile
+            v-if="isUserLoggedIn"
             @click="$router.push({name: 'admin-users'})">
             <v-list-tile-title>User Management</v-list-tile-title>
           </v-list-tile>
