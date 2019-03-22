@@ -43,13 +43,19 @@ module.exports = {
             if (!captchaPassed) return
 
             req.body.email = req.body.email.toLowerCase()
-            if (User.query().where("email", req.body.email).length > 0) {
-                res.status(412).send({
+            const duplicateEmail = await User.query().where("email", req.body.email)
+            console.log("test email")
+            if (duplicateEmail.length > 0) {
+                console.log("test email positive")
+                res.status(200).send({
                     error: 'This email account is already in use.'
                 })
                 return
             }
             const pwhashed = await User.hashPassword(req.body.password)
+            if (config.operations.disableNewUsers) {
+                req.body.active = 0
+            }
             var user = await User.query().insert(req.body)
             if (pwhashed) {//manually update password
                 await User.knex().from('users')
@@ -57,16 +63,21 @@ module.exports = {
                     .update({ password: pwhashed })
             }
             user = user.cleanForJWT()
-            const userJson = user.toJSON()
-            res.send({
-                user: userJson,
-                message: `Registration for user ${req.body.email} completed!`,
-                token: jwtSignUser(userJson)
+            console.log(user)
+            if (!user.active) {
+                return res.send({
+                    user: user,
+                    successMessage: `Registration for user ${req.body.email} completed, but the user is disabled.  Contact your administrator to activate.`
+                })
+            }
+            return res.send({
+                user: user,
+                token: jwtSignUser(user)
             })
         } catch (err) {
             console.log(err)
             res.status(412).send({
-                error: 'This email account is already in use.'
+                error: 'Error on server: ' + err
             })
         }
     },

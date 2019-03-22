@@ -3,20 +3,24 @@
     <v-layout row wrap>
       <v-flex xs12 sm6 offset-sm3>
         <panel title="Login">
-          <v-form @submit.prevent="login()" id="submitLoginForm">
+          <v-form @submit.prevent="login()" ref="submitLoginForm" id="submitLoginForm">
           <v-flex xs12 sm12 md8 offset-md2>
                   <v-text-field
                     label="E-Mail"
                     type="email"
                     name="email"
+                    ref="email"
                     v-model="email"
+                    v-on:keyup.enter="login" 
                     placeholder="E-mail">
                   </v-text-field>
                   <v-text-field
                     label="Password"
                     type="password"
                     name="password"
+                    ref="password"
                     placeholder="Password"
+                    v-on:keyup.enter="login"
                     v-model="password">
                   </v-text-field>
                 <div class="error" v-html="error" />
@@ -24,7 +28,6 @@
           </v-flex>
           </v-form>
        </panel>
-
       </v-flex>
     </v-layout>
   </v-container>
@@ -64,6 +67,7 @@ export default {
     this.error = this.$route.params.error || ''
     this.$store.dispatch('setToken', null)
     this.$store.dispatch('setUser', null)
+    this.$refs.email.focus();
   }
 }
 </script>

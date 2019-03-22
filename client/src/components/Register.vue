@@ -4,11 +4,12 @@
       <v-flex xs12 sm6 offset-sm3>
           <panel title="Register New User">
                 <v-flex xs12 sm12 md10 offset-md1>
-                  <v-form name="registrationForm" @submit.prevent="register" autocomplete="off">
+                  <v-form name="registrationForm" ref="registrationForm" autocomplete="off">
                     <v-text-field
                       label="First Name"
                       type="text"
                       name="firstName"
+                      ref="firstName"
                       v-model="user.firstName">
                     </v-text-field>
                     <v-text-field
@@ -21,10 +22,12 @@
                       label="E-Mail"
                       type="email"
                       name="email"
+                      :rules="emailRules"
                       v-model="user.email">
                     </v-text-field>
                     <v-text-field
                       label="Password"
+                      :rules="[() => !!user.password || 'This field is required']"
                       type="password"
                       name="password"
                       autocomplete="new-password"
@@ -44,8 +47,6 @@
                       color="success"
                       icon="check_circle"
                       outline
-                      dismissible
-                      style="width: 70%"
                     >
                       {{successMessage}}
                     </v-alert>
@@ -54,15 +55,12 @@
                       color="error"
                       icon="warning"
                       outline
-                      dismissible
                     >
                       {{errorMessage}}
                     </v-alert>
-                    <v-btn type="submit" color="info">Register</v-btn>
+                    <v-btn color="info" @click="register">Register</v-btn>
                   </v-form>
-                </v-flex>
-                <div class="error" v-html="error" />
-                
+                </v-flex>                
           </panel>
 
       </v-flex>
@@ -84,24 +82,37 @@ export default {
       password: '',
       recaptchaToken: ''
       },
-      errorMessage: '',
+      errorMessage: null,
+      successMessage: null,
       sitekey: '6LejLpgUAAAAAG0OivRXLro19nNSy0wUe94qgiJw',
+      emailRules: [
+        v => !!v || 'E-mail is required',
+        v => /.+@.+/.test(v) || 'E-mail must be valid'
+      ]
     }
   },
   components: {VueRecaptcha},
   methods: {
     async register () {
-      const response = await AuthenticationService.register(this.user)
-      if (response.error) {
-        this.errorMessage = response.error
-      } if (response.success) {
-        this.successMessage = response.success
-      } else {
-        this.$store.dispatch('setToken', response.token)
-        this.$store.dispatch('setUser', response.user)
-        this.$router.push({
-          name: 'dashboard'
-        })
+      try{
+        if (!this.$refs.registrationForm.validate()) return
+        const response = await AuthenticationService.register(this.user)
+        alert(JSON.stringify(response))
+        if (response.error) {
+          this.errorMessage = response.error
+          this.successMessage = null
+        } else if (response.successMessage) {
+          this.successMessage = response.successMessage
+          this.errorMessage = null
+        } else { //if no message returned, then just log them in
+          this.$store.dispatch('setToken', response.token)
+          this.$store.dispatch('setUser', response.user)
+          this.$router.push({
+            name: 'dashboard'
+          })
+        }
+      } catch (err) {
+        alert(err)
       }
     },
     onVerify (token) {
@@ -110,6 +121,9 @@ export default {
     onExpired () {
       this.user.recaptchaToken = ''
     }
+  },
+  mounted() {
+    this.$refs.firstName.focus()
   }
 }
 </script>
