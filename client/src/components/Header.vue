@@ -3,7 +3,7 @@
     <v-toolbar-side-icon></v-toolbar-side-icon>
 
     <v-toolbar-title class="white--text">
-      <span class="home" @click="navigateTo({name: 'root'})">
+      <span class="home" @click="navigateTo('root')">
       LHSC Cardiology Referrals
       </span>
     </v-toolbar-title>
@@ -22,7 +22,7 @@
             v-if="$store.state.isUserLoggedIn"
             flat
             dark
-            @click="navigateTo('users')">
+            @click="navigateTo('admin-users')">
           Users
         </v-btn>
         <v-btn
@@ -57,9 +57,35 @@
         <span>Logout</span>
       </v-tooltip>
 
-      <v-btn icon>
-            <v-icon>more_vert</v-icon>
-      </v-btn>
+      <v-menu offset-y>
+        <template v-slot:activator="{ on }">
+          <v-btn icon v-on="on">
+                <v-icon>more_vert</v-icon>
+          </v-btn>
+        </template>
+        <v-list>
+          <v-list-tile
+            v-if="!isUserLoggedIn"
+            @click="$router.push({name: 'login'})"
+          >
+            <v-list-tile-title>Login</v-list-tile-title>
+          </v-list-tile>
+          <v-list-tile
+            @click="$router.push({name: 'admin-users'})">
+            <v-list-tile-title>User Management</v-list-tile-title>
+          </v-list-tile>
+          <v-list-tile
+            v-if="isUserLoggedIn"
+            @click="$router.push({name: 'useroptions'})">
+            <v-list-tile-title>Change Password</v-list-tile-title>
+          </v-list-tile>
+                    <v-list-tile
+            v-if="isUserLoggedIn"
+            @click="logout">
+            <v-list-tile-title>Logout</v-list-tile-title>
+          </v-list-tile>
+        </v-list>
+      </v-menu>
 
 
   </v-toolbar>
@@ -77,7 +103,7 @@ export default {
   },
   methods: {
     navigateTo (route) {
-      this.$router.push(route)
+      this.$router.push({name: route})
     },
     logout () {
       this.$store.dispatch('setToken', null)

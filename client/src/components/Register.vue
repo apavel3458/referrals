@@ -4,7 +4,7 @@
       <v-flex xs12 sm6 offset-sm3>
           <panel title="Register New User">
                 <v-flex xs12 sm12 md10 offset-md1>
-                  <form name="tab-tracker-form" autocomplete="off">
+                  <v-form name="registrationForm" @submit.prevent="register" autocomplete="off">
                     <v-text-field
                       label="First Name"
                       type="text"
@@ -38,10 +38,31 @@
                         :sitekey="sitekey">
                       </vue-recaptcha>
                     </div>
-                  </form>
+
+                    <v-alert
+                      :value="successMessage"
+                      color="success"
+                      icon="check_circle"
+                      outline
+                      dismissible
+                      style="width: 70%"
+                    >
+                      {{successMessage}}
+                    </v-alert>
+                    <v-alert
+                      :value="errorMessage"
+                      color="error"
+                      icon="warning"
+                      outline
+                      dismissible
+                    >
+                      {{errorMessage}}
+                    </v-alert>
+                    <v-btn type="submit" color="info">Register</v-btn>
+                  </v-form>
                 </v-flex>
                 <div class="error" v-html="error" />
-                <v-btn color="info" @click="register">Register</v-btn>
+                
           </panel>
 
       </v-flex>
@@ -63,22 +84,24 @@ export default {
       password: '',
       recaptchaToken: ''
       },
-      error: '',
+      errorMessage: '',
       sitekey: '6LejLpgUAAAAAG0OivRXLro19nNSy0wUe94qgiJw',
     }
   },
   components: {VueRecaptcha},
   methods: {
     async register () {
-      try {
-        const response = await AuthenticationService.register(this.user)
-        this.$store.dispatch('setToken', response.data.token)
-        this.$store.dispatch('setUser', response.data.user)
+      const response = await AuthenticationService.register(this.user)
+      if (response.error) {
+        this.errorMessage = response.error
+      } if (response.success) {
+        this.successMessage = response.success
+      } else {
+        this.$store.dispatch('setToken', response.token)
+        this.$store.dispatch('setUser', response.user)
         this.$router.push({
           name: 'dashboard'
         })
-      } catch (error) {
-        this.error = error.response.data.error
       }
     },
     onVerify (token) {

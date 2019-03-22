@@ -25,8 +25,8 @@
           </v-alert>
           <v-alert
             :value="errorMessage"
-            color="success"
-            icon="check_circle"
+            color="error"
+            icon="warning"
             outline
             dismissible
             style="width: 70%"

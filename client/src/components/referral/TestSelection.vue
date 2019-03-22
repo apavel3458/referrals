@@ -37,17 +37,18 @@
               <v-flex xs12 v-if="showESE()">
                 <panel title="Recommend Exercise Stress Echo" align-center="true" bar-colour="green darken-1">
                   <v-flex xs12 sm6 offset-sm3>
-                  <ol class="instructionList">
+                  <!--ol class="instructionList">
                     <li>Log into powerchart</li>
                     <li>Select 'Stress Echo' order</li>
                     <li>In the patient info section write "for chest pain clinic"</li>
                     <li>Click "Submit Form" at the bottom of this form to send us this information</li>
-                  </ol>
+                  </ol-->
                   </v-flex>
                 </panel>
               </v-flex>
               <v-flex xs12 v-if="showMIBI()">
                 <panel title="Recommend Nuclear Stress Test" align-center="true" bar-colour="deep-purple">
+                  &nbsp;
                 </panel>
               </v-flex>
               <v-flex xs12 v-if="showConsult()">

@@ -2,15 +2,15 @@ const AuthenticationController = require('./controllers/AuthenticationController
 const AuthenticationControllerPolicy = require('./policies/AuthenticationControllerPolicy')
 const ReferralsController = require('./controllers/ReferralsController')
 const UserController = require('./controllers/UserController')
-const {AuthFilter, AuthAdminFiltert} = require('./policies/AuthenticationFilter')
+const {AuthFilter, AuthAdminFilter} = require('./policies/AuthenticationFilter')
 
 
 
 module.exports = (app) => {
 
-    app.all("/admin/*", AuthAdminFiltert, function(req, res, next) {
+    app.all("/admin/*", AuthAdminFilter, function(req, res, next) {
         next();
-      })
+    })
 
     app.post('/register', 
         AuthenticationControllerPolicy.register,
@@ -38,19 +38,23 @@ module.exports = (app) => {
         AuthFilter,
         ReferralsController.put)
 
-    app.get('/user',
+    app.get('/admin/users',
         AuthFilter,
         UserController.index)
 
-    app.put('/user/:userId',
+    app.put('/admin/users/:userId',
         AuthFilter,
         UserController.put)
 
-    app.post('/user/:userId/delete',
+    app.post('/admin/users/:userId/delete',
         AuthFilter,
         UserController.delete)
 
-    app.post('/groups',
+    app.post('/admin/groups',
         AuthFilter,
         UserController.groups)
+
+    app.put('/user/changepw',
+        AuthFilter,
+        UserController.changepw)
 }

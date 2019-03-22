@@ -14,8 +14,8 @@ module.exports = {
             }
         })(req, res, next)
     },
-    AuthAdminFiltert: function(filter) {
+    AuthAdminFilter: function(req, res, next) {
         //TODO
-        return filter
+        next()
     }
 }

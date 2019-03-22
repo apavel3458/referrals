@@ -3,6 +3,7 @@
     <v-layout row wrap>
       <v-flex xs12 sm6 offset-sm3>
         <panel title="Login">
+          <v-form @submit.prevent="login()" id="submitLoginForm">
           <v-flex xs12 sm12 md8 offset-md2>
                   <v-text-field
                     label="E-Mail"
@@ -19,8 +20,9 @@
                     v-model="password">
                   </v-text-field>
                 <div class="error" v-html="error" />
-                <v-btn color="info" @click="login">Login</v-btn>
+                <v-btn @click.prevent="login()" color="info">Login</v-btn>
           </v-flex>
+          </v-form>
        </panel>
 
       </v-flex>
@@ -42,19 +44,19 @@ export default {
   components: {},
   methods: {
     async login () {
-      try {
-        const response = await AuthenticationService.login({
-          email: this.email,
-          password: this.password
-        })
-        // console.log(response.token)
-        this.$store.dispatch('setToken', response.data.token)
-        this.$store.dispatch('setUser', response.data.user)
+      const response = await AuthenticationService.login({
+        email: this.email,
+        password: this.password
+      })
+      //alert(JSON.stringify(response))
+      if (response.error) {
+        this.error = response.error
+      } else {
+        this.$store.dispatch('setToken', response.token)
+        this.$store.dispatch('setUser', response.user)
         this.$router.push({
           name: 'dashboard'
         })
-      } catch (error) {
-        this.error = error.response.data.error
       }
     }
   },

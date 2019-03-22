@@ -70,6 +70,11 @@ class User extends Model {
 
 }
 
+User.prototype.cleanForJWT = function() {
+  const user = _.pick(this, ['id', 'firstName','lastName','email','active','lastLogin'])
+  return user
+}
+
 User.comparePassword = function (candidatePassword, userPassword) {
   const result = bcrypt.compareSync(candidatePassword, userPassword)
   return result

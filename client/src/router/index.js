@@ -7,7 +7,8 @@ import Dashboard from '@/components/Dashboard'
 import CreateReferral from '@/components/referral/CreateReferral'
 import ViewReferral from '@/components/referral/ViewReferral'
 import EditReferral from '@/components/referral/EditReferral'
-import User from '@/components/user/User'
+import AdminUsers from '@/components/user/AdminUsers'
+import UserOptions from '@/components/user/UserOptions'
 
 Vue.use(Router)
 
@@ -49,9 +50,14 @@ export default new Router({
       component: EditReferral
     },
     {
-      path: '/users',
-      name: 'users',
-      component: User
+      path: '/admin/users',
+      name: 'admin-users',
+      component: AdminUsers
+    },
+    {
+      path: '/useroptions',
+      name: 'useroptions',
+      component: UserOptions
     }
   ]
 })

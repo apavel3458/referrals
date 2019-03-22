@@ -4,7 +4,7 @@
     <v-layout  wrap>
       <v-flex xs12>
         <v-card>
-            <v-toolbar color="indigo lighten-1" dark>
+            <v-toolbar color="indigo lighten" dark>
                 <v-toolbar-side-icon></v-toolbar-side-icon>
                 <v-toolbar-title>Users</v-toolbar-title>
                 <v-spacer></v-spacer>
@@ -101,9 +101,9 @@
 </template>
 
 <script>
-import UserService from '@/services/UserService'
+import AdminUserService from '@/services/AdminUserService'
 import Moment from 'moment'
-import UserEdit from './UserEdit'
+import UserEdit from './AdminUserEdit'
 
 export default {
     components: {UserEdit},
@@ -137,7 +137,7 @@ export default {
     },
     methods: {
         formatDate (d) {
-            const ndate = new Moment(d)
+            const ndate = new Moment(d, 'MM-DD-YYYY, hh:mm:ss A')
             if (!ndate.isValid()) {
                 return '---'
             } else {
@@ -153,7 +153,7 @@ export default {
             selected.active = !selected.active
             selected.loginAttempts = 0
             try {
-                var reply = (await UserService.put(selected)).data
+                var reply = (await AdminUserService.put(selected)).data
                 if (reply.error) {
                     throw new Error("Server Error")
                 } else {
@@ -166,7 +166,7 @@ export default {
         },
         async updateUser(user) {
             try {
-                var reply = (await UserService.put(user)).data
+                var reply = (await AdminUserService.put(user)).data
                 if (reply.error) {
                     throw new Error("Server Error")
                 } else {
@@ -182,7 +182,7 @@ export default {
         async deleteUser(user) {
             if (confirm(`Are you sure you want to delete ${user.firstName} ${user.lastName} (${user.email})?`)) {
                 try {
-                    const reply = (await UserService.delete(user)).data
+                    const reply = (await AdminUserService.delete(user)).data
                     if (reply.error) {
                         throw new Error("Server Error: " + reply.error)
                     }
@@ -198,8 +198,8 @@ export default {
             this.dialog = true
         },
         async loadData() {
-            this.users = (await UserService.index(this.search)).data
-            this.groups = (await UserService.groups()).data
+            this.users = (await AdminUserService.index(this.search)).data
+            this.groups = (await AdminUserService.groups()).data
         },
 
 

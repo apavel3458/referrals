@@ -7,7 +7,7 @@
         {{ patient.lastName }}, {{ patient.firstName }}
       </div>
       <div class="subhead">
-        <span class="subsubhead"><span class="infoHeader">DOB:</span> {{ patient.dob }}</span></br>
+        <span class="subsubhead"><span class="infoHeader">DOB:</span> {{ patient.dob }}</span><br/>
         <span class="subsubhead"><span class="infoHeader">LHSC PIN:</span>{{ patient.pin }}</span>
       </div>
     </v-flex>

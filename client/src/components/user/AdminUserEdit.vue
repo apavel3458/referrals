@@ -76,11 +76,14 @@ export default {
     },
     methods: {
         formatDate (d) {
-            const ndate = new Moment(d)
+            var ndate = new Moment(d, 'MM-DD-YYYY, hh:mm:ss A')
             if (!ndate.isValid()) {
-                return '---'
+              ndate = new Moment(d, 'MM-DD-YYYY')
+              if (!ndate.isValid()) {
+                return d
+              }
             } else {
-                return ndate.format('YYYY-MM-DD HH:MM')
+                return ndate.format('YYYY-MM-DD hh:mm:ss A')
             }
         },
     }

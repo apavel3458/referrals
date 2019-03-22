@@ -12,9 +12,11 @@ export default () => {
   })
 
   //Add interceptor to forward logout
-  instance.interceptors.response.use(function (response) {
+  instance.interceptors.response.use(
+    function (response) {
       return response;
-    }, function (error) {
+    }, 
+    function (error) {
       if(error.response.status === 403) { 
         router.push(
           { 
@@ -24,6 +26,10 @@ export default () => {
           }
         )
         return Promise.reject({error: "Not Authenticated"}) //deal with error
+      } else if (error.response.status === 500 || error.response.status === 404) {
+        alert("The server encountered an error processing your request. Error Status: " + error.response.status + " | " + error.response.error)
+      } else if (error.response.status === 401) {
+        return Promise.resolve(error.response);
       }
       // Trow errr again (may be need for some other catch)
       return Promise.reject(error);

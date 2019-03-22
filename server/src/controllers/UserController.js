@@ -74,5 +74,41 @@ module.exports = {
             })
         }
     },
+
+    async changepw(req, res) {
+        try {
+            
+            const input = req.body
+            console.log(input)
+            console.log(req.user)
+            //first confirm password
+            const userPassword = (await User.knex().from('users')
+                .select('id', 'password')
+                .where('id', req.user.id)
+                .first()).password
+            const isPasswordValid = await User.comparePassword(input.password, userPassword)
+            if (!isPasswordValid) {
+                return res.status(401).send({
+                    error: "Password change failed: Current password is incorrect"
+                })
+            }
+            
+            //USER IS AUTHENTIC------
+            const newPasswordHashed = await User.hashPassword(input.newPassword)
+            //const user = await User.query().patchAndFetchById(req.user.id, {password: newPasswordHashed})
+            if (newPasswordHashed) {//manually update password
+                await User.knex().from('users')
+                    .where({id: req.user.id})
+                    .update({ password: newPasswordHashed })
+            }
+            //console.log(user)
+            res.send({success: true})
+        } catch (err) {
+            console.log(err)
+            res.status(500).send({
+                error: 'An error has occured trying to fetch user.'
+            })
+        }
+    },
     
 }
