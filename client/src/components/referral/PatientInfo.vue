@@ -8,7 +8,6 @@
                             label="Patient's Last Name"
                             type="text"
                             required
-                            :rules="[() => !!pt.lastName || 'This field is required']"
                             v-model="pt.lastName">
                         </v-text-field>
                     </v-flex>
@@ -17,7 +16,6 @@
                             label="Patient's First Name"
                             type="text"
                             required
-                            :rules="[() => !!pt.firstName || 'This field is required']"
                             v-model="pt.firstName">
                         </v-text-field>
                     </v-flex>
@@ -35,7 +33,6 @@
                             prepend-icon="event"
                             required
                             return-masked-value
-                            :rules="[() => !!pt.dob || 'This field is required']"
                             mask="####-##-##"
                           ></v-text-field>
                     </v-flex>
@@ -52,8 +49,8 @@
                         <v-text-field
                             label="Your Name"
                             required
-                            :rules="[() => !!pt.referringName || 'This field is required']"
                             type="text"
+                            @blur="fillAttending()"
                             v-model="pt.referringName">
                         </v-text-field>
                     </v-flex>
@@ -68,14 +65,22 @@
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap>
-                    <v-flex xs6 sm6>
+                    <v-flex xs4 sm4>
                         <v-text-field
                             label="Referring Attending (if different)"
                             type="text"
                             v-model="pt.referringAttending">
                         </v-text-field>
                     </v-flex>
-                    <v-flex xs6 sm6>
+                    <v-flex xs4 sm4>
+                        <v-text-field
+                            label="Billing Number"
+                            required
+                            type="number"
+                            v-model="pt.referringBilling">
+                        </v-text-field>
+                    </v-flex>
+                    <v-flex xs4 sm4>
                         <!--v-text-field
                             label="Date Seen in ER"
                             type="date"
@@ -157,6 +162,11 @@ export default {
     }
   },
   methods: {
+    fillAttending () {
+      if (!this.pt.referringAttending || this.pt.referringAttending=='') {
+        this.pt.referringAttending = this.pt.referringName
+      }
+    },
     save (date) {
       this.$refs.menu.save(date)
     },

@@ -3,7 +3,7 @@
     <v-layout row wrap>
       <v-flex xs12 sm10 offset-sm1>
         <v-stepper v-model="e1" non-linear>
-          <v-stepper-header>
+          <v-stepper-header class="noprint">
             <v-stepper-step :complete="e1 > 1" step="1" editable>Introduction</v-stepper-step>
 
             <v-divider></v-divider>
@@ -126,9 +126,11 @@
               <v-card
                 class="mb-1"
                 color="grey lighten-5">
+                <v-flex xs12 class="noprint">
+                  <h3>You can go back and make changes if needed.</h3>
+                </v-flex>
                 <v-flex xs12>
-                  <h3>Please review information below and click SUBMIT.</h3>
-                  <h3>You can go back and make changes to the data if needed.</h3>
+                  <h3>Fax Number: 519-663-3288 (UH Cardiology 5-Outpatients)</h3>
                 </v-flex>
                 <summary-view v-bind:patient="pt"></summary-view>
 
@@ -142,15 +144,16 @@
                 Error: {{errorMessage}}
               </v-alert>
 
-              <v-btn hover @click="e1 = 3">Back</v-btn>
-              <v-btn hover @click="reset(true)">Reset Form</v-btn>
+              <v-btn hover class="noprint" @click="e1 = 3">Back</v-btn>
+              <v-btn hover class="noprint" @click="reset(true)">Reset Form</v-btn>
               <!-- v-btn hover
-                color="primary"
+                color="primary" class="noprint"
                 @click="submit()">
                 Submit Form
               </v-btn-->
               <v-btn hover
                 color="primary"
+                class="noprint"
                 @click="print()">
                 Print Form
               </v-btn>
@@ -201,6 +204,7 @@ export default {
         referringName: null,
         referringEmail: null,
         referringAttending: null,
+        referringBilling: null,
         dateSeenInER: new Date().toISOString().substr(0, 10),
         comments: null,
         testSelected: null
@@ -272,6 +276,7 @@ export default {
       }
     },
     print() {
+      alert("Once printed please close the browser window to remove all data")
       window.print()
     }
   }

@@ -4,31 +4,34 @@
   <v-layout wrap align-top>
     <v-flex xs12 md6 class="infoBox">
       <div class="head">
-        {{ patient.lastName }}, {{ patient.firstName }}
+        Patient Information:
       </div>
       <div class="subhead">
+        <span class="subsubhead"><span class="infoHeader">Name:</span>{{ patient.lastName }}, {{ patient.firstName }}</span><br/>
         <span class="subsubhead"><span class="infoHeader">DOB:</span> {{ patient.dob }}</span><br/>
         <span class="subsubhead"><span class="infoHeader">LHSC PIN:</span>{{ patient.pin }}</span>
       </div>
     </v-flex>
     <v-flex xs12 md6 class="infoBox">
       <div class="head2">
-        Referring: {{ patient.referringAttending }}
+        Referring Physician:
       </div>
       <div class="subhead">
         <span class="subsubhead"><span class="infoHeader">Referring Name:</span> {{patient.referringName}}</span><br/>
-        <span class="subsubhead"><span class="infoHeader">Referring Email:</span>({{ patient.referringEmail }})</span>
-        <br/>
-        <span class="subsubhead"><span class="infoHeader">Date Seen in ER:</span>{{patient.dateSeenInER }}</span>
+        <span class="subsubhead"><span class="infoHeader">Referring Email:</span>({{ patient.referringEmail }})</span><br/>
+        <span class="subsubhead"><span class="infoHeader">Referring Attending:</span> {{patient.referringAttending}}</span><br/>
+        <span class="subsubhead"><span class="infoHeader">Referring Billing No:</span> {{patient.referringBilling}}</span><br/>
+        <span class="subsubhead"><span class="infoHeader">Date Seen in ER:</span>{{patient.dateSeenInER }}</span><br/>
+        <span class="subsubhead"><span class="infoHeader">Date Referred:</span>{{now}}</span>
       </div>
     </v-flex>
 
     <v-flex xs12 md6 infoBox>
       <div class="head2">
-        {{ patient.testSelected }}
+        Test Selected:
       </div>
       <div class="subhead">
-        <span class="subsubhead"><span class="infoHeader">Instructions to follow</span></span>
+        <span class="subsubhead"><span class="infoHeader">{{ patient.testSelected }}</span></span>
       </div>
     </v-flex>
     <v-flex xs12 md6 infoBox>
@@ -36,7 +39,7 @@
         Comments:
       </div>
       <div class="subhead">
-        {{patient.comments}}
+        {{patient.comments==''?patient.comments:'None'}}
       </div>
     </v-flex>
 
@@ -52,6 +55,11 @@ export default {
     patient: {
       type: Object,
       required: true
+    }
+  },
+  computed: {
+    now() {
+      return moment().format('YYYY-MM-DD')
     }
   },
   methods: {
