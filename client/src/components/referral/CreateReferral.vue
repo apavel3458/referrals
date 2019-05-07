@@ -144,10 +144,15 @@
 
               <v-btn hover @click="e1 = 3">Back</v-btn>
               <v-btn hover @click="reset(true)">Reset Form</v-btn>
-              <v-btn hover
+              <!-- v-btn hover
                 color="primary"
                 @click="submit()">
                 Submit Form
+              </v-btn-->
+              <v-btn hover
+                color="primary"
+                @click="print()">
+                Print Form
               </v-btn>
             </v-stepper-content>
 
@@ -265,6 +270,9 @@ export default {
       if (this.ptInfoValid) {
         this.e1 = 3
       }
+    },
+    print() {
+      window.print()
     }
   }
 }

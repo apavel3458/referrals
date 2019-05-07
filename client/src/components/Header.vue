@@ -26,11 +26,11 @@
           Users
         </v-btn>
 
-      <v-btn icon
+      <!-- v-btn icon
         v-if="!$store.state.isUserLoggedIn"
         >
         <v-icon>account_box</v-icon>
-      </v-btn>
+      </v-btn-->
 
       
       <v-btn flat dark v-if="$store.state.isUserLoggedIn">
@@ -56,7 +56,7 @@
                 <v-icon>more_vert</v-icon>
           </v-btn>
         </template>
-        <v-list>
+        <!-- v-list>
           <v-list-tile
             v-if="!isUserLoggedIn"
             @click="$router.push({name: 'login'})"
@@ -86,7 +86,7 @@
             @click="logout">
             <v-list-tile-title>Logout</v-list-tile-title>
           </v-list-tile>
-        </v-list>
+        </v-list-->
       </v-menu>
 
 
